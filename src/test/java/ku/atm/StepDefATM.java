@@ -34,6 +34,15 @@ public class StepDefATM {
         validLogin = atm.validateCustomer(id, pin);
     }
 
+    @When("I login to ATM with unregistered id")
+    public void i_login_to_atm_with_unregistered_id() {
+        int unregisteredId = 9999;
+        while (bank.getCustomer(unregisteredId) != null) {
+            unregisteredId++;
+        }
+        validLogin = atm.validateCustomer(unregisteredId, 111);
+    }
+
     @Then("I can login")
     public void i_can_login() {
         assertTrue(validLogin);
@@ -70,4 +79,14 @@ public class StepDefATM {
                      bank.getCustomer(id).getAccount().getBalance());
     }
 
+    @When("I deposit {float} to ATM")
+    public void i_deposit_to_atm(double amount) {
+        atm.deposit(amount);
+    }
+
+    @When("I deposit invalid {float} to ATM")
+    public void i_deposit_invalid_to_atm(double amount) {
+        assertThrows(IllegalArgumentException.class,
+                () -> atm.deposit(amount));
+    }
 }
